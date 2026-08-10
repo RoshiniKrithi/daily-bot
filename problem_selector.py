@@ -270,33 +270,183 @@ class LeetCodePlatform(CodingPlatform):
 
 
 class CodeChefPlatform(CodingPlatform):
-    """CodeChef Platform Implementation Template.
-
-    To activate CodeChef automation:
-    1. Define standard practice problems in a catalog map (e.g. CODECHEF_PRACTICE_SOLUTIONS).
-    2. Add CodeChef contest patterns to CONTEST_URL_PATTERNS in safety.py (e.g. '/starters', '/contests/').
-    3. Implement select_eligible_problem() to navigate to www.codechef.com/practice.
-    """
+    """CodeChef Platform Integration Implementation."""
 
     async def select_eligible_problem(self, page: Page) -> ProblemInfo | None:
-        logger.info("CodeChef automation target selected.")
-        # TODO: Implement CodeChef navigation and practice problem selection
-        raise NotImplementedError("CodeChef automation module ready for expansion. Implement select_eligible_problem().")
+        """Select a standard practice problem from CodeChef catalog."""
+        logger.info("Navigating to CodeChef practice catalog...")
+        await page.goto("https://www.codechef.com/practice", wait_until="domcontentloaded", timeout=30000)
+
+        for slug, data in CODECHEF_PRACTICE_SOLUTIONS.items():
+            url = data["url"]
+
+            if ContestSafetyGuard.is_contest_url(url):
+                logger.warning(f"CodeChef problem URL '{url}' matched contest filter! Skipping.")
+                continue
+
+            problem = ProblemInfo(
+                title=data["title"],
+                url=url,
+                difficulty=data["difficulty"],
+                is_practice_catalog=True,
+                problem_id=slug,
+                solution_code=data["code"],
+            )
+
+            valid, reason = self.validator.validate(problem)
+            if valid:
+                logger.info(f"Successfully selected CodeChef practice problem: '{problem.title}' ({problem.url})")
+                return problem
+            else:
+                logger.warning(f"CodeChef problem '{problem.title}' failed validation: {reason}")
+
+        logger.error("No eligible CodeChef practice problem passed safety validation.")
+        return None
+
+
+class CodeforcesPlatform(CodingPlatform):
+    """Codeforces Platform Integration Implementation."""
+
+    async def select_eligible_problem(self, page: Page) -> ProblemInfo | None:
+        """Select a standard practice problem from Codeforces problemset catalog."""
+        logger.info("Navigating to Codeforces problemset catalog...")
+        await page.goto("https://codeforces.com/problemset", wait_until="domcontentloaded", timeout=30000)
+
+        for slug, data in CODEFORCES_PRACTICE_SOLUTIONS.items():
+            url = data["url"]
+
+            if ContestSafetyGuard.is_contest_url(url):
+                logger.warning(f"Codeforces problem URL '{url}' matched contest filter! Skipping.")
+                continue
+
+            problem = ProblemInfo(
+                title=data["title"],
+                url=url,
+                difficulty=data["difficulty"],
+                is_practice_catalog=True,
+                problem_id=slug,
+                solution_code=data["code"],
+            )
+
+            valid, reason = self.validator.validate(problem)
+            if valid:
+                logger.info(f"Successfully selected Codeforces practice problem: '{problem.title}' ({problem.url})")
+                return problem
+            else:
+                logger.warning(f"Codeforces problem '{problem.title}' failed validation: {reason}")
+
+        logger.error("No eligible Codeforces practice problem passed safety validation.")
+        return None
 
 
 class HackerRankPlatform(CodingPlatform):
-    """HackerRank Platform Implementation Template.
-
-    To activate HackerRank automation:
-    1. Define standard practice problems in a catalog map (e.g. HACKERRANK_PRACTICE_SOLUTIONS).
-    2. Add HackerRank contest patterns to CONTEST_URL_PATTERNS in safety.py (e.g. '/compete/', '/challenges/').
-    3. Implement select_eligible_problem() to navigate to www.hackerrank.com/domains/python.
-    """
+    """HackerRank Platform Integration Implementation."""
 
     async def select_eligible_problem(self, page: Page) -> ProblemInfo | None:
-        logger.info("HackerRank automation target selected.")
-        # TODO: Implement HackerRank navigation and practice problem selection
-        raise NotImplementedError("HackerRank automation module ready for expansion. Implement select_eligible_problem().")
+        """Select a standard practice problem from HackerRank Python domain catalog."""
+        logger.info("Navigating to HackerRank Python practice catalog...")
+        await page.goto("https://www.hackerrank.com/domains/python", wait_until="domcontentloaded", timeout=30000)
+
+        for slug, data in HACKERRANK_PRACTICE_SOLUTIONS.items():
+            url = data["url"]
+
+            if ContestSafetyGuard.is_contest_url(url):
+                logger.warning(f"HackerRank problem URL '{url}' matched contest filter! Skipping.")
+                continue
+
+            problem = ProblemInfo(
+                title=data["title"],
+                url=url,
+                difficulty=data["difficulty"],
+                is_practice_catalog=True,
+                problem_id=slug,
+                solution_code=data["code"],
+            )
+
+            valid, reason = self.validator.validate(problem)
+            if valid:
+                logger.info(f"Successfully selected HackerRank practice problem: '{problem.title}' ({problem.url})")
+                return problem
+            else:
+                logger.warning(f"HackerRank problem '{problem.title}' failed validation: {reason}")
+
+        logger.error("No eligible HackerRank practice problem passed safety validation.")
+        return None
+
+
+CODECHEF_PRACTICE_SOLUTIONS: dict[str, dict[str, str]] = {
+    "START01": {
+        "title": "Number Mirror",
+        "url": "https://www.codechef.com/practice/course/basic-programming-concepts/DIFF500/problems/START01",
+        "difficulty": "Easy",
+        "code": "n = int(input())\nprint(n)\n",
+    },
+    "FLOW001": {
+        "title": "Add Two Numbers",
+        "url": "https://www.codechef.com/practice/course/basic-programming-concepts/DIFF500/problems/FLOW001",
+        "difficulty": "Easy",
+        "code": (
+            "t = int(input())\n"
+            "for _ in range(t):\n"
+            "    a, b = map(int, input().split())\n"
+            "    print(a + b)\n"
+        ),
+    },
+}
+
+CODEFORCES_PRACTICE_SOLUTIONS: dict[str, dict[str, str]] = {
+    "4A": {
+        "title": "Watermelon",
+        "url": "https://codeforces.com/problemset/problem/4/A",
+        "difficulty": "Easy",
+        "code": (
+            "w = int(input())\n"
+            "if w > 2 and w % 2 == 0:\n"
+            "    print('YES')\n"
+            "else:\n"
+            "    print('NO')\n"
+        ),
+    },
+    "71A": {
+        "title": "Way Too Long Words",
+        "url": "https://codeforces.com/problemset/problem/71/A",
+        "difficulty": "Easy",
+        "code": (
+            "n = int(input())\n"
+            "for _ in range(n):\n"
+            "    s = input().strip()\n"
+            "    if len(s) > 10:\n"
+            "        print(f'{s[0]}{len(s)-2}{s[-1]}')\n"
+            "    else:\n"
+            "        print(s)\n"
+        ),
+    },
+}
+
+HACKERRANK_PRACTICE_SOLUTIONS: dict[str, dict[str, str]] = {
+    "py-hello-world": {
+        "title": "Say Hello, World! With Python",
+        "url": "https://www.hackerrank.com/challenges/py-hello-world/problem",
+        "difficulty": "Easy",
+        "code": 'print("Hello, World!")\n',
+    },
+    "py-if-else": {
+        "title": "Python If-Else",
+        "url": "https://www.hackerrank.com/challenges/py-if-else/problem",
+        "difficulty": "Easy",
+        "code": (
+            "n = int(input().strip())\n"
+            "if n % 2 != 0:\n"
+            "    print('Weird')\n"
+            "elif 2 <= n <= 5:\n"
+            "    print('Not Weird')\n"
+            "elif 6 <= n <= 20:\n"
+            "    print('Weird')\n"
+            "else:\n"
+            "    print('Not Weird')\n"
+        ),
+    },
+}
 
 
 class PlatformFactory:
@@ -309,8 +459,12 @@ class PlatformFactory:
             return LeetCodePlatform(config)
         elif name == "codechef":
             return CodeChefPlatform(config)
+        elif name == "codeforces":
+            return CodeforcesPlatform(config)
         elif name == "hackerrank":
             return HackerRankPlatform(config)
         else:
-            raise ValueError(f"Unknown platform: '{config.platform}'. Supported: leetcode, codechef, hackerrank")
+            raise ValueError(
+                f"Unknown platform: '{config.platform}'. Supported: leetcode, codechef, codeforces, hackerrank"
+            )
 

@@ -113,7 +113,21 @@ class AuthenticationManager:
                 logger.warning("User authentication could not be verified.")
                 return False
 
-            return False
+            else:
+                # Platform-specific DOM inspection for CodeChef, Codeforces, HackerRank
+                logger.info(f"Checking authentication state on {self.config.platform.capitalize()}...")
+                if self.config.dry_run:
+                    logger.info(f"Dry-run mode active for platform '{self.config.platform.capitalize()}'. Authentication guard passed.")
+                    return True
+
+                # Non-dry-run auth verification
+                user_avatar = page.locator("a[href*='/users/'], a[href*='/profile/'], .avatar, [class*='user-head']")
+                if await user_avatar.count() > 0 and await user_avatar.first.is_visible():
+                    logger.info(f"Authentication verified on {self.config.platform.capitalize()}.")
+                    return True
+
+                logger.warning(f"User is not logged in on {self.config.platform.capitalize()}.")
+                return False
 
         except Exception as err:
             logger.error(f"Error checking authentication state: {err}")

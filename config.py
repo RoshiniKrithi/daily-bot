@@ -32,7 +32,7 @@ class Config:
 
     def validate(self) -> None:
         """Validate settings at startup. Fail fast if configuration is invalid."""
-        supported_platforms = {"leetcode", "codechef", "hackerrank"}
+        supported_platforms = {"leetcode", "codechef", "codeforces", "hackerrank"}
         if self.platform.lower() not in supported_platforms:
             raise ValueError(
                 f"Unsupported platform: {self.platform}. Supported: {supported_platforms}"

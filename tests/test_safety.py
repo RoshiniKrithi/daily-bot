@@ -34,6 +34,14 @@ class TestURLSafetyFilter:
         url = "https://www.hackerrank.com/compete/challenge/foo"
         assert ContestSafetyGuard.is_contest_url(url) is True
 
+    def test_codeforces_gym_url_is_unsafe(self) -> None:
+        url = "https://codeforces.com/gym/100001/problem/A"
+        assert ContestSafetyGuard.is_contest_url(url) is True
+
+    def test_codechef_cookoff_url_is_unsafe(self) -> None:
+        url = "https://www.codechef.com/cook-off/problems/FOO"
+        assert ContestSafetyGuard.is_contest_url(url) is True
+
     def test_empty_url_fails_closed(self) -> None:
         assert ContestSafetyGuard.is_contest_url("") is True
 

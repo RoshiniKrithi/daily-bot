@@ -45,3 +45,38 @@ def test_solution_provider_dynamic_fetch_failure(mock_urlopen):
 
     sol = SolutionProvider.get_solution("non-existent-problem-xyz")
     assert sol is None
+
+
+def test_platform_factory_all_platforms():
+    """Test PlatformFactory returns correct platform instances for all supported targets."""
+    from config import Config
+    from problem_selector import (
+        CodeChefPlatform,
+        CodeforcesPlatform,
+        HackerRankPlatform,
+        LeetCodePlatform,
+        PlatformFactory,
+    )
+
+    def dummy_cfg(plat: str) -> Config:
+        return Config(
+            platform=plat,
+            language="python",
+            difficulty="Easy",
+            daily_problem_count=1,
+            headless=True,
+            max_retries=3,
+            log_level="INFO",
+            dry_run=True,
+            debug=False,
+            login=False,
+            browser_profile_dir=None,
+            leetcode_session=None,
+            csrftoken=None,
+        )
+
+    assert isinstance(PlatformFactory.get_platform(dummy_cfg("leetcode")), LeetCodePlatform)
+    assert isinstance(PlatformFactory.get_platform(dummy_cfg("codechef")), CodeChefPlatform)
+    assert isinstance(PlatformFactory.get_platform(dummy_cfg("codeforces")), CodeforcesPlatform)
+    assert isinstance(PlatformFactory.get_platform(dummy_cfg("hackerrank")), HackerRankPlatform)
+
