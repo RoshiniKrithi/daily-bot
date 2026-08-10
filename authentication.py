@@ -50,6 +50,14 @@ class AuthenticationManager:
         if self.config.codechef_session:
             cc_val = self.config.codechef_session.strip().strip('"').strip("'")
             cookies.append({
+                "name": "Authorization",
+                "value": cc_val,
+                "domain": "www.codechef.com",
+                "path": "/",
+                "secure": True,
+                "sameSite": "Lax",
+            })
+            cookies.append({
                 "name": "authtoken",
                 "value": cc_val,
                 "domain": ".codechef.com",
