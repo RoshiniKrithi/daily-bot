@@ -47,6 +47,37 @@ class AuthenticationManager:
                 "sameSite": "Lax",
             })
 
+        if self.config.codechef_session:
+            cc_val = self.config.codechef_session.strip().strip('"').strip("'")
+            cookies.append({
+                "name": "authtoken",
+                "value": cc_val,
+                "domain": ".codechef.com",
+                "path": "/",
+                "secure": True,
+                "sameSite": "Lax",
+            })
+        if self.config.codeforces_session:
+            cf_val = self.config.codeforces_session.strip().strip('"').strip("'")
+            cookies.append({
+                "name": "JSESSIONID",
+                "value": cf_val,
+                "domain": "codeforces.com",
+                "path": "/",
+                "secure": True,
+                "sameSite": "Lax",
+            })
+        if self.config.hackerrank_session:
+            hr_val = self.config.hackerrank_session.strip().strip('"').strip("'")
+            cookies.append({
+                "name": "_hr_session",
+                "value": hr_val,
+                "domain": ".hackerrank.com",
+                "path": "/",
+                "secure": True,
+                "sameSite": "Lax",
+            })
+
         if cookies:
             logger.info("Injecting configured session cookies into browser context...")
             await context.add_cookies(cookies)

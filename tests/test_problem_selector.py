@@ -73,6 +73,9 @@ def test_platform_factory_all_platforms():
             browser_profile_dir=None,
             leetcode_session=None,
             csrftoken=None,
+            codechef_session=None,
+            codeforces_session=None,
+            hackerrank_session=None,
         )
 
     assert isinstance(PlatformFactory.get_platform(dummy_cfg("leetcode")), LeetCodePlatform)

@@ -29,6 +29,9 @@ class Config:
     browser_profile_dir: Path
     leetcode_session: str | None
     csrftoken: str | None
+    codechef_session: str | None
+    codeforces_session: str | None
+    hackerrank_session: str | None
 
     def validate(self) -> None:
         """Validate settings at startup. Fail fast if configuration is invalid."""
@@ -116,6 +119,9 @@ def load_config(cli_args: list[str] | None = None) -> Config:
         browser_profile_dir=browser_profile_dir,
         leetcode_session=os.getenv("LEETCODE_SESSION"),
         csrftoken=os.getenv("CSRFTOKEN"),
+        codechef_session=os.getenv("CODECHEF_SESSION"),
+        codeforces_session=os.getenv("CODEFORCES_SESSION"),
+        hackerrank_session=os.getenv("HACKERRANK_SESSION"),
     )
 
     config.validate()
