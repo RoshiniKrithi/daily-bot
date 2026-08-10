@@ -1,0 +1,27 @@
+# Environment variables & secrets
+.env
+*.env
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Browser profile & logs
+browser_profile/
+streak_execution.log
+streak_state.json
+screenshots/
+*.png
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
